@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html>
+    <head>
+
+
+        <title>Calculadora</title>
+        <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css" />
+
+        <style>
+            table, th, td {
+                border: 1px solid black;
+                border-radius: 5px;
+                width: 40px;
+                height: 30px;
+                
+                
+            }
+
+            th, td {
+                text-align: center;
+                
+            }
+
+            table {
+                border-spacing: 30px;
+            }
+
+            button {
+
+                width: 55px;
+                height: 40px;
+                border-radius: 5px;
+                cursor: pointer;
+            }
+
+            .LogoOnOff{
+                background-color: lightblue;
+            }
+
+            .Fundo{
+                background-color: lightgray;
+            }
+
+            
+
+            .lightOn{
+
+                background-color: rgb(169, 219, 94);
+                border-radius: 5px;
+                border-style: ridge;
+                height: 60px;
+
+            }
+
+            .lightOff{
+
+                background-color: darkseagreen;
+                border-radius: 5px;
+                border-style: ridge;
+                height: 60px;
+
+            }
+
+            .EspacoBotao{
+                background-color: gray;
+            }
+            .EspacoBotao:hover{
+                background-color: rgb(170, 170, 170);
+            }
+
+            .BotoesCimo{
+                background-color: lightsalmon;
+                font-size: 16px;
+                
+            }
+            .BotoesCimo:hover{
+                background-color: rgb(245, 195, 175);
+                
+            }
+
+            .BotoesNormal{
+                background-color: antiquewhite;
+                font-size: 14px;
+            }
+            .BotoesNormal:hover{
+                background-color: rgb(248, 246, 244);
+            }
+
+            #display1 {
+                font-size: 10px;
+                font-family: Verdana, Geneva, Tahoma, sans-serif;
+            }
+
+            #display2 {
+                font-size: 22px;
+                font-family: Verdana, Geneva, Tahoma, sans-serif;
+            }
+
+
+            .left {
+            text-align: left;
+            }
+
+            .right {
+                text-align: right;
+            }
+
+        </style>
+
+        <script>
+
+            let $calc = '0';
+
+            function light() {
+                // liga e desliga a luz do visor
+                let $calc = document.getElementById('display');
+                $calc.classList.toggle('lightOff');
+
+                /*trocar o icon do interruptor*/
+                let $lightBtn = document.getElementById('lightBtn');
+
+                if ($lightBtn.classList.contains('fa-toggle-off')) {
+                    $lightBtn.classList.remove('fa-toggle-off');
+                    $lightBtn.classList.add('fa-toggle-on');
+                
+                } else {
+                    $lightBtn.classList.remove('fa-toggle-on');
+                    $lightBtn.classList.add('fa-toggle-off');
+                }
+
+
+                // $lightBtn.classList.toggle('fa-toggle-on');
+
+        }
+
+        
+
+        function writeNumber(id) {
+            let $display = id;//[document.getElementById('display1').innerHTML, document.getElementById('display2').innerHTML]
+            let $fimOpr = false;
+            let $start = false;
+            let $parLeft = false;
+            let $parRight = false;
+
+            if ($calc.endsWith('/') || $calc.endsWith('*') || $calc.endsWith('+') || $calc.endsWith('-')) {
+                $fimOpr = true;
+            }
+
+            if ($calc === '0') {
+                $start = true;
+            }
+
+            if ($calc.endsWith('(')){
+                $parLeft = true;
+            }
+
+            if ($calc.endsWith(')')) {
+                $parRight = true;
+            }
+   
+            switch (id) {
+                case ',':
+                    
+                    if ($parLeft || $parRight || $fimOpr) {
+                        id='';
+                        // document.getElementById('dot').disabled = false;
+                    } else {
+                        document.getElementById('dot').disabled = true;
+                    }
+                    
+                break;
+
+                case '/':
+                    document.getElementById('dot').disabled = false;
+                    if ($fimOpr) {cleanLast();}
+                    if ($start) {id = '0';}
+                    if ($calc === '-') {id = ''}
+                    if ($parLeft) {id=''}
+                    if ($calc.endsWith('(-') || $calc.endsWith(',')) {
+                        id='';
+                    }
+                    $display = '&divide;';
+                break;
+
+                case '*':
+                    document.getElementById('dot').disabled = false;
+                    if ($fimOpr) {cleanLast();}
+                    if ($start) {id = '0';}
+                    if ($calc === '-') {id = ''}
+                    if ($parLeft) {id=''}
+                    if ($calc.endsWith('(-') || $calc.endsWith(',')) {
+                        id='';
+                    }
+                    $display = '&times;';
+                break;
+
+                case '+':
+                    document.getElementById('dot').disabled = false;
+                    if ($fimOpr) {cleanLast();}
+                    if ($start) {id = '0';}
+                    if ($calc === '-') {id = ''}
+                    if ($parLeft) {id=''}
+                    if ($calc.endsWith('(-') || $calc.endsWith(',')) {
+                        id='';
+                    }
+                    $display = '&plus;';
+                break;
+
+                case '-':
+
+                    if (($calc==='0') && ((id=== '+') && (id==='*') && (id==='/'))){
+                        id = '0' ;
+                    }
+                    
+                    if ($fimOpr) {cleanLast();}  
+                    if ($parLeft) {id='-'}
+                    if ($calc.endsWith(',')) {
+                        id='';
+                    }
+                    $display = '&minus;';
+
+                     document.getElementById('dot').disabled = false;  
+                    
+                break;   
+
+                case ')':
+
+                    if ($fimOpr) {
+                        id = '';
+                    }
+
+                    if ($calc.split('(').length <= $calc.split(')').length) {
+                    
+                        if ($start) {
+                            id= '0';
+                        } else {
+                           id = ''; 
+                        }
+                    }  
+
+                    if ($calc.endsWith(',')) {
+                        id='';
+                        }
+                break;
+
+                case '(':
+
+                    if ($fimOpr && $calc.length > 1) {
+                        id;
+                    } else if ($start || $calc.endsWith('(')) {
+                        id;
+                    } else {
+                        id = '';
+                    }
+                    break;
+
+
+                default:
+                    if ($parRight) {id=''}
+            }  
+                // ESCREVER NO DISPLAY
+
+            if ($start && id !== ',') {
+                $calc = id;
+                document.getElementById('display1').innerHTML =  $display;
+                document.getElementById('display2').innerHTML =  $display;
+            } else {
+                $calc += id;
+                document.getElementById('display1').innerHTML += $display;
+                document.getElementById('display2').innerHTML =  $calc;
+            }
+
+                  
+        }
+        
+        // LIMPAR TUDO
+        function clean() {
+            $calc = '0';
+            document.getElementById('display1').innerHTML = '0'; 
+            document.getElementById('display2').innerHTML = $calc;
+            document.getElementById('dot').disabled = false;
+        }
+
+
+
+
+        // LIMPAR ULTIMO CARACTERE
+
+        function cleanLast() {
+
+            let $display = [document.getElementById('display1').innerHTML, document.getElementById('display2').innerHTML]
+            let $fimOpr = false;
+            let $caracter = $calc.slice(0,-1);
+            let $lastCar = $calc.slice(-1);
+
+            if ($calc.endsWith('/') || $calc.endsWith('*') || $calc.endsWith('+') || $calc.endsWith('-')) {
+                $fimOpr = true;
+            }
+
+            if ($lastCar === ',') {
+                document.getElementById('dot').disabled= false;
+            }
+
+            if ($fimOpr && $calc.lastIndexOf(',') > Math.max($caracter.lastIndexOf('/'), $caracter.lastIndexOf('*'), $caracter.lastIndexOf('+'), $caracter.lastIndexOf('-'))) {
+                document.getElementById('dot').disabled = true;
+            }
+
+            if ($calc.length < '2') {
+                $calc = '0';
+                document.getElementById('display1').innerHTML = $calc;
+                document.getElementById('display2').innerHTML = '0';
+            } else {
+                $calc = $calc.slice(0,-1);
+                document.getElementById('display1').innerHTML = $calc;
+                document.getElementById('display2').innerHTML = $display[1].slice(0,-1);
+            }
+        }
+        
+    
+        function results() {
+            let $display = [document.getElementById('display1').innerHTML, document.getElementById('display2').innerHTML]
+            if (!($calc.endsWith('/') || $calc.endsWith('*') || $calc.endsWith('-') || $calc.endsWith('+'))) {
+                $calc =eval($calc)*10/10;
+                document.getElementById('display1').innerHTML += '&equals;';
+                document.getElementById('display2').innerHTML= $calc;
+            } else {
+
+            }
+
+        }
+
+        function Arr() {
+            let $calc1 = document.getElementById('display1').innerHTML
+            let $calc2 = document.getElementById('display2').innerHTML
+
+            let $calc = [document.getElementById('display1').innerHTML, document.getElementById('display2').innerHTML]
+
+            $out = $calc 
+        }
+
+        </script>
+    </head>
+    <body>
+
+        <table style="width: 20%" class="Fundo">
+            <tr class="LogoOnOff">
+                <th colspan="2" class="left"
+                    style="background-image: url(img/calculadora.png); background-size: 50%; background-repeat: no-repeat; background-position: center;" ></th>
+                <th colspan="2" class="right"><i id="lightBtn" onclick="light()" class="fas fa-toggle-on"></i></th>
+            </tr>
+
+            <tr>
+                
+                <th colspan="4" id="display" class="lightOn">
+
+                    <div id="display1" class="right">0</div>
+                    <div id="display2" class="right">0</div>
+
+                </th>
+            </tr>
+
+            <tr class="EspacoBotao">
+                <th style="width: 25%;"><button id="(" class="BotoesCimo"  onclick="writeNumber(id)">(</button></th>
+                <th style="width: 25%;"><button id=")" class="BotoesCimo" onclick="writeNumber(id)">)</button></th>
+                <th style="width: 25%;"><button id="C" class="BotoesCimo" onclick="clean()">C</button></th>
+                <th style="width: 25%;"><button class="BotoesCimo" onclick="cleanLast()"><i class="fas fa-backspace"></i></button></th>
+            </tr>
+
+            <tr class="EspacoBotao">
+                <td><button id="7" class="BotoesNormal"  onclick="writeNumber(id)">7</button></td>
+                <td><button id="8" class="BotoesNormal" onclick="writeNumber(id)">8</button></td>
+                <td><button id="9" class="BotoesNormal" onclick="writeNumber(id)">9</button></td>
+                <td><button id="/" class="BotoesNormal" onclick="writeNumber(id)">&divide;</button></td>
+            </tr>
+
+            <tr class="EspacoBotao">
+                <td><button id="4" class="BotoesNormal" onclick="writeNumber(id)">4</button></td>
+                <td><button id="5" class="BotoesNormal" onclick="writeNumber(id)">5</button></td>
+                <td><button id="6" class="BotoesNormal" onclick="writeNumber(id)">6</button></td>
+                <td><button id="*"class="BotoesNormal" onclick="writeNumber(id)">&times;</button></td>
+            </tr>
+
+            <tr class="EspacoBotao">
+                <td><button id="1" class="BotoesNormal" onclick="writeNumber(id)">1</button></td>
+                <td><button id="2" class="BotoesNormal" onclick="writeNumber(id)">2</button></td>
+                <td><button id="3" class="BotoesNormal" onclick="writeNumber(id)">3</button></td>
+                <td><button id="-" class="BotoesNormal" onclick="writeNumber(id)">&minus;</button></td>
+            </tr>
+
+            <tr class="EspacoBotao">
+                <td><button id="dot" class="BotoesNormal" onclick="writeNumber(',')">,</button></td>
+                <td><button id="0" class="BotoesNormal" onclick="writeNumber(id)">0</button></td>
+                <td><button id="=" class="BotoesNormal" onclick="results()">&equals;</button></td>
+                <td><button id="+" class="BotoesNormal" onclick="writeNumber(id)">&plus;</button></td>
+            </tr>
+            
+         
+        </table>
+
+
+    </body>
+</html>
